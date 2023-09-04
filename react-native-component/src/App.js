@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text } from "react-native";
 import MyButton from "./components/MyButton";
 import Counter from "./components/Counter";
+import EventButton from "./components/EventButton";
+import EventInput from "./components/EventInput";
 
 const App = () => {
   return (
@@ -38,6 +40,9 @@ const App = () => {
       />
 
       <Counter />
+
+      <EventButton />
+      <EventInput />
     </View>
   );
 };
