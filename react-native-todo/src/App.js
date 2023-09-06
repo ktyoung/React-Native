@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { ThemeProvider, styled } from "styled-components/native";
 import { theme } from "./theme";
 import { StatusBar } from "react-native";
+import Input from "./components/Input";
 
 // SafeAreaView 컴포넌트를 사용하면, iOS 환경에서 노치 디자인 문제를 해결할 수 있다.
 const Container = styled.SafeAreaView`
@@ -20,6 +21,17 @@ const Title = styled.Text`
 `;
 
 export default function App() {
+  const [newTask, setNewTask] = useState("");
+
+  const _addTask = () => {
+    alert(`Add: ${newTask}`);
+    setNewTask("");
+  };
+
+  const _handleTextChange = (text) => {
+    setNewTask(text);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container>
@@ -30,6 +42,12 @@ export default function App() {
           backgroundColor={theme.background}
         />
         <Title>TODO List</Title>
+        <Input
+          placeholder="+ Add a Task"
+          value={newTask}
+          onChangeText={_handleTextChange}
+          onSubmitEditing={_addTask}
+        />
       </Container>
     </ThemeProvider>
   );
