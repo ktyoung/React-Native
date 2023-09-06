@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { ThemeProvider, styled } from "styled-components/native";
 import { theme } from "./theme";
-import { StatusBar } from "react-native";
+import { Dimensions, StatusBar } from "react-native";
 import Input from "./components/Input";
+import IconButton from "./components/IconButton";
+import { images } from "./images";
+import Task from "./components/Task";
 
 // SafeAreaView 컴포넌트를 사용하면, iOS 환경에서 노치 디자인 문제를 해결할 수 있다.
 const Container = styled.SafeAreaView`
@@ -20,6 +23,11 @@ const Title = styled.Text`
   margin: 0px 20px;
 `;
 
+const List = styled.ScrollView`
+  flex: 1;
+  width: ${({ width }) => width - 40}px;
+`;
+
 export default function App() {
   const [newTask, setNewTask] = useState("");
 
@@ -31,6 +39,8 @@ export default function App() {
   const _handleTextChange = (text) => {
     setNewTask(text);
   };
+
+  const width = Dimensions.get("window").width;
 
   return (
     <ThemeProvider theme={theme}>
@@ -48,6 +58,12 @@ export default function App() {
           onChangeText={_handleTextChange}
           onSubmitEditing={_addTask}
         />
+        <List width={width}>
+          <Task text="Test" />
+          <Task text="Sample" />
+          <Task text="React-Native" />
+          <Task text="Hello, World!" />
+        </List>
       </Container>
     </ThemeProvider>
   );
