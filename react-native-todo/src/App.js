@@ -3,9 +3,9 @@ import { ThemeProvider, styled } from "styled-components/native";
 import { theme } from "./theme";
 import { Dimensions, StatusBar } from "react-native";
 import Input from "./components/Input";
-import IconButton from "./components/IconButton";
-import { images } from "./images";
 import Task from "./components/Task";
+import AsyncStroage from "@react-native-community/async-storage";
+import { AppLoading } from "expo";
 
 // SafeAreaView 컴포넌트를 사용하면, iOS 환경에서 노치 디자인 문제를 해결할 수 있다.
 const Container = styled.SafeAreaView`
@@ -29,13 +29,25 @@ const List = styled.ScrollView`
 `;
 
 export default function App() {
+  const width = Dimensions.get("window").width;
+
   const [newTask, setNewTask] = useState("");
-  const [tasks, setTasks] = useState({
-    1: { id: "1", text: "Test", completed: false },
-    2: { id: "2", text: "Sample", completed: false },
-    3: { id: "3", text: "React-Native", completed: false },
-    4: { id: "4", text: "Hello, World!", completed: false },
-  });
+  const [tasks, setTasks] = useState({});
+  const [isReady, setIsReady] = useState(false);
+
+  const _saveTask = async (tasks) => {
+    try {
+      await AsyncStroage.setItem("task", JSON.stringify(tasks));
+      setTasks(tasks);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const _loadTasks = async () => {
+    const loadedTasks = await AsyncStroage.getItem("tasks");
+    setTasks(JSON.parse(loadedTasks || "{}"));
+  };
 
   const _addTask = () => {
     const ID = Date.now().toString();
@@ -49,27 +61,27 @@ export default function App() {
     // Input 컴포넌트 초기화
     setNewTask("");
     // 기존의 목록을 유지한 상태에서 새로운 항목이 추가되게 구현
-    setTasks({ ...tasks, ...newTaskObject });
+    _saveTask({ ...tasks, ...newTaskObject });
   };
 
   const _deleteTask = (id) => {
     const currentTasks = Object.assign({}, tasks);
     delete currentTasks[id];
-    setTasks(currentTasks);
+    _saveTask(currentTasks);
   };
 
   // 함수를 호출할 때마다 completed 값이 전환되는 함수
   const _toggleTask = (id) => {
     const currentTasks = Object.assign({}, tasks);
     currentTasks[id]["completed"] = !currentTasks[id]["completed"];
-    setTasks(currentTasks);
+    _saveTask(currentTasks);
   };
 
   // 수정된 항목이 전달되면 할 일 목록에서 해당 항목을 수정하는 함수
   const _updateTask = (item) => {
     const currentTasks = Object.assign({}, tasks);
     currentTasks[item.id] = item;
-    setTasks(currentTasks);
+    _saveTask(currentTasks);
   };
 
   const _handleTextChange = (text) => {
@@ -80,9 +92,7 @@ export default function App() {
     setNewTask("");
   };
 
-  const width = Dimensions.get("window").width;
-
-  return (
+  return isReady ? (
     <ThemeProvider theme={theme}>
       <Container>
         {/* StatusBar 컴포넌트를 사용하면, 안드로이드 환경에서 상태 바의 스타일을
@@ -114,5 +124,11 @@ export default function App() {
         </List>
       </Container>
     </ThemeProvider>
+  ) : (
+    <AppLoading
+      startAsync={_loadTasks}
+      onFinish={setIsReady(true)}
+      onError={console.error}
+    />
   );
 }
