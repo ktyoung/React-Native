@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { styled } from "styled-components/native";
-import Length from "./components/Length";
+import Dog from "./components/Dog";
 
 const Container = styled.View`
   flex: 1;
@@ -12,7 +12,7 @@ const Container = styled.View`
 const App = () => {
   return (
     <Container>
-      <Length />
+      <Dog />
     </Container>
   );
 };
