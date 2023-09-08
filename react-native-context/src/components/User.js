@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { styled } from "styled-components/native";
 import UserContext from "../contexts/User";
 
@@ -8,11 +8,8 @@ const StyledText = styled.Text`
 `;
 
 const User = () => {
-  return (
-    <UserContext.Consumer>
-      {({ user }) => <StyledText>Name: {user.name}</StyledText>}
-    </UserContext.Consumer>
-  );
+  const { user } = useContext(UserContext);
+  return <StyledText>Name: {user.name}</StyledText>;
 };
 
 export default User;
