@@ -20,7 +20,7 @@ export const login = async ({ email, password }) => {
 };
 
 const uploadImage = async (uri) => {
-  if (uri.startsWith("https")) {
+  if (uri && uri.startsWith("https")) {
     return uri;
   }
 
@@ -42,4 +42,9 @@ export const signup = async ({ name, email, password, photo }) => {
   const photoURL = await uploadImage(photo);
   await updateProfile(auth.currentUser, { displayName: name, photoURL });
   return user;
+};
+
+export const signout = async () => {
+  await signOut(auth);
+  return {};
 };

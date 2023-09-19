@@ -7,7 +7,7 @@ import { removeWhitespace, validateEmail } from "../utils/commons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { login } from "../utils/firebase";
 import { Alert } from "react-native";
-import { ProgressContext } from "../contexts";
+import { ProgressContext, UserContext } from "../contexts";
 
 const Container = styled.View`
   flex: 1;
@@ -32,6 +32,7 @@ const Login = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   const { spinner } = useContext(ProgressContext);
+  const { dispatch } = useContext(UserContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,7 +55,7 @@ const Login = ({ navigation }) => {
     try {
       spinner.start();
       const user = await login({ email, password });
-      Alert.alert("Login Success", user.email);
+      dispatch(user);
     } catch (e) {
       Alert.alert("Login Error", e.message);
     } finally {
