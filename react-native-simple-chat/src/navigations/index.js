@@ -3,13 +3,14 @@ import React, { useContext } from "react";
 import AuthStack from "./AuthStack";
 import { Spinner } from "../components";
 import { ProgressContext } from "../contexts";
+import MainStack from "./MainStack";
 
 const Navigation = () => {
   const { inProgress } = useContext(ProgressContext);
 
   return (
     <NavigationContainer>
-      <AuthStack />
+      <MainStack />
       {inProgress && <Spinner />}
     </NavigationContainer>
   );
